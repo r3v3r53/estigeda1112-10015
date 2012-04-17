@@ -56,12 +56,8 @@ class kdtree:
     
     pass
 
-
-from kdtree import *
-
 def main():
-    A = [1,2,3]
-    b = kdtree(A)
+    
     pass
 
 main()
