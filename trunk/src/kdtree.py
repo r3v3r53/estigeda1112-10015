@@ -15,12 +15,13 @@ class kdtree:
     o que a classe faz...
     '''
 
-    def __init__(self, A):
+    def __init__(self, A = []):
         '''
         construtor, pode inicializar
         uma lista de dados e ordená-la
         '''
-        self.__sort()
+        self.__A = A
+        self.__sort__()
         pass
 
     def __sort__(self):
@@ -55,3 +56,12 @@ class kdtree:
     
     pass
 
+
+from kdtree import *
+
+def main():
+    A = [1,2,3]
+    b = kdtree(A)
+    pass
+
+main()
