@@ -17,6 +17,7 @@ operações:
 '''
 from Quicksort import *
 from No import *
+from RBT import *
 
 class KDTree(object):
 	'''
@@ -30,42 +31,6 @@ class KDTree(object):
 		self.nil = No(None, None)
 		self.parent = self.left = self.right = self.root = self.nil
 		self.dimention = dimention
-
-	def insert(self, a, z):
-		'''
-		Inserir Nó na árvore
-		@param z nó a inserir
-		'''
-		z.parent = self.nil
-		z.left = self.nil
-		z.right = self.nil
-
-		y = self.nil
-		x = self.root
-
-		dim = -1
-
-		while x != self.nil:
-			dim = (dim + 1) % self.dimention
-			y = x
-			if z.key[dim] < x.key[dim]:
-				x.LC += 1
-				x = x.left
-			else:
-				if z.key[dim] > x.key[dim]:
-					x.RC += 1
-				x = x.right
-			if abs(x.RC - x.LC) > self.dimention:
-				self.insertFixUp(x, z)
-		z.parent = y
-		if y == self.nil:
-			self.root = z
-		elif z.key[dim] < y.key[dim]:
-			y.left = z
-		else:
-			y.right = z
-		z.dim = dim
-		pass
 
 	def delete(self, z):
 		if z.parent != self.nil:
@@ -94,9 +59,9 @@ class KDTree(object):
 		if x == self.nil or k == x.valor:
 			return x
 			if k < x.key:
-				return self.search(x.left, k)
+				return self.searchByValue(x.left, k)
 			else:
-				return self.search(x.right, k)
+				return self.searchByValue(x.right, k)
 
 	def searchByKey(self, x, k):
 		'''
@@ -105,9 +70,9 @@ class KDTree(object):
 		if x == self.nil or k == x.key:
 			return x
 			if k < x.key:
-				return self.search(x.left, k)
+				return self.searchByKey(x.left, k)
 			else:
-				return self.search(x.right, k)
+				return self.searchByKey(x.right, k)
 		pass
 
 	def minimum(self, x):
@@ -139,7 +104,7 @@ class KDTree(object):
 		@return nó seguinte ou null no caso de o próprio ser o maior da árvore
 		'''
 		if x.right != self.nil:
-			return minimum(x.right)
+			return self.minimum(x.right)
 		y = x.parent
 		while y != self.nil and x == y.right:
 			x = y
@@ -158,21 +123,95 @@ class KDTree(object):
 			lista.append( x )
 			self.inorderWalk(x.right, lista)
 
-	def insertFixUp(self, x, z):
+	def insert(self, a, z):
+		'''
+		Inserir Nó na árvore
+		@param z nó a inserir
+		'''
+		z.parent = self.nil
+		z.left = self.nil
+		z.right = self.nil
+
+		y = self.nil
+		x = self.root
+
+		dim = -1
+		while x != self.nil:
+			dim = (dim + 1) % self.dimention
+			y = x
+			if z.key[dim] < x.key[dim]:
+				x.LC += 1
+				x = x.left
+			else:
+				x.RC += 1
+				x = x.right
+			if abs(x.RC - x.LC) > self.dimention:
+				self.fixTree(x, z)
+		z.parent = y
+		if y == self.nil:
+			self.root = z
+		elif z.key[dim] < y.key[dim]:
+			y.left = z
+		else:
+			y.right = z
+		z.dim = dim
+		pass
+
+	def fixTree(self, x, z):
 		'''
 		o berbicacho está aqui!!!
 		'''
+		dim = x.dim
 		lista = []
-		self.inorderWalk(x, lista)
+		arvore = RBT()
+		if x != self.nil:
+			print x
+			self.inorderWalk(x, lista)
+			for i in lista:
+				arvore.insere(i)
+			lista2 = []
+			arvore.inorderWalk(arvore.root, lista2)
+			print "$#$#$#$#$#$##$"
+			#for i in lista2:
+			#	print i
+			print "--------------------"
+		'''arvores = []
+		for i in range(self.dimention):
+			arvores.append ArvoreRedBlack()
+		
+		lista = []
+		self.kinorderWalk(x, lista)
+		arv = ArvoreRedBlack()
 		print "#############################"
 		for i in lista:
+			arv.insert(i)
+
+		lista = []
+		arv.inorder_walk(arv.root, lista)
+		for i in lista:
 			print i
+
 		print "#############################"
 
 		pass
-	pass
+		'''
 
+no = No((0,0), "Pedro")
+a = KDTree(2)
+a.insert(a.root, no)
+print a.root
 
+b = RBT()
+b.insere(no)
+
+a.insert(a.root, b.root)
+print b.root
+print a.root == b.root
+lista = []
+b.inorderWalk(b.root, lista)
+for i in lista:
+	print i
+'''
 no = []
 a = KDTree(2)
 
@@ -197,16 +236,4 @@ lista = []
 a.inorderWalk(a.root, lista)
 for i in lista:
 	print i
-print
-print 
-print
-lista2 = []
-a.delete(no[2])
-
-lista = []
-a.inorderWalk(a.root, lista)
-for i in lista:
-	print i
-print
-print 
-print
+'''
