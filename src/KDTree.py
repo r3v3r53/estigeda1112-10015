@@ -35,73 +35,44 @@ class KDTree(object):
     self.lista = []
     self.lista2 = []
 
-
-
-
-
-  def insert(self, a, z, balance = True):
-    '''
-    Inserir nó na árvore
-    @param z nó a inserir
-    '''
-
+  def insert(self, a, z, balance = False):
     z.parent = self.nil
     z.left = self.nil
     z.right = self.nil
-    z.RC = 0
-    z.LC = 0
+    z.LC = z.RC = 0
 
     y = self.nil
     x = self.root
-
     dim = -1
-    nivel = 0
 
     while x != self.nil:
-      # Se a chave for igual, faz-se o update do valor do nó
-      if x.key == z.key:
-        x.valor = z.valor
-        y = z
-        self.__clearCount(x, 1)
-        break
       dim = (dim + 1) % self.dimention
+      #print
+      #print
+      #print x.key, x.key[dim:]
+      #print z.key, z.key[dim:]
+      
+      #print dim
+
       y = x
-      if z.key[dim] == x.key[dim]:
-        continue
-      elif z.key[dim] < x.key[dim]:
-        x.LC += 1
-        if balance:
-          if min(x.LC, x.RC) <= (2**math.ceil(math.log(max(x.RC, x.LC),2)))/2 - 1:
-            self.insertFixUp(x,z)
-            y = z
-            break
+      if z.key[dim:] < x.key[dim:]:
+        #print "LEFT"
         x = x.left
       else:
-        if z.key[dim] > x.key[dim]:
-          x.RC += 1
-          if balance:
-            if min(x.LC, x.RC) <= (2**math.ceil(math.log(max(x.RC, x.LC),2)))/2 - 1:
-              self.insertFixUp(x,z)
-              y = z
-              break
+        #print "RIGHT"
+        x = x.right
+    z.parent = y
 
-          x = x.right
-        
-      
-    if y != z:
-      z.parent = y
-      if y == self.nil:
-        self.root = z
-      elif z.key[dim] < y.key[dim]:
-        y.left = z
-      else:
-        y.right = z
-      z.dim = dim
+    if y == self.nil:
+      self.root = z
+    elif z.key[dim:] < y.key[dim:]:
+      y.left = z
+    else:
+      y.right = z
 
-      if len(self.stack) > 0:
-        self.__reInsert()
-  ###
-  ### FIM DO INSERT
+
+
+
 
   def __clear(self, x, i):
     if x == self.root:
@@ -231,13 +202,16 @@ class KDTree(object):
     '''
     o berbicacho está aqui!!!
     '''
-
-    x = self.root
-    self.lista = []
+   
+'''
+    #self.lista = []
+    if x == self.nil:
+      x = self.root
     self.lista.append(z)
     self.inorderWalk(x, self.lista)
     self.__clear(x, x.LC + x.RC + 1)
     self.__rebuild()
+
 
   def __rebuild(self):
     self.stack = []
@@ -257,6 +231,21 @@ class KDTree(object):
         self.insert(self.root, k, False)
       elif len(temp) == 1:
         self.insert(self.root, temp[0], False)
+    else:
+      self.__checkBalance()
+
+  def __checkBalance(self):
+    stack = []
+    stack.append(self.root)
+    while len(stack) > 0:
+      x = stack.pop(0)
+      if x != self.nil:
+        if x.left != self.nil: stack.append(x.left)    
+        if x.right != self.nil: stack.append(x.right)
+        if x.LC + x.RC > 0:
+          if min(x.LC, x.RC) <= (2**math.ceil(math.log(max(x.RC, x.LC),2)))/2 - 1:
+            self.insertFixUp(x.parent, x)
+'''
 
 no = []
 a = KDTree(2)
@@ -266,16 +255,15 @@ no.append(No((1,1), "Pedro"))
 no.append(No((0,1), "Miguel"))
 no.append(No((2,1), "Clemente"))
 no.append(No((2,2), "Clemente"))
-no.append(No((1,1), "Miguel"))
 no.append(No((1,0), "Miguel"))
 no.append(No((2,4), "Clemente"))
 
-#no.append(No((2,3), "Miguel"))
-#no.append(No((0,4), "Miguel"))
-#no.append(No((0,2), "Miguel"))
-#no.append(No((0,3), "Miguel"))
-#no.append(No((3,2), "Miguel"))
-#no.append(No((1,2), "Miguel"))
+no.append(No((2,3), "Miguel"))
+no.append(No((0,4), "Miguel"))
+no.append(No((0,2), "Miguel"))
+no.append(No((0,3), "Miguel"))
+no.append(No((3,2), "Miguel"))
+no.append(No((1,2), "Miguel"))
 
 #Quicksort(no)
 for i in no:
