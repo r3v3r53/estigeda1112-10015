@@ -114,7 +114,5 @@ class RBT(object):
         z.cor = self.RED
         self.RBTInsertFixup(z)
     pass
-     
-    def __append__(self, x):
-        self.RBTInsert(x)
+        
 
