@@ -35,7 +35,7 @@ class KDTree(object):
     self.lista = []
     self.lista2 = []
 
-  def insert(self, a, z, balance = False):
+  def insert(self, a, z, balance = True):
     z.parent = self.nil
     z.left = self.nil
     z.right = self.nil
@@ -57,9 +57,17 @@ class KDTree(object):
       y = x
       if z.key[dim:] < x.key[dim:]:
         #print "LEFT"
+        x.LC += 1
+        if balance:
+          if min(x.LC, x.RC) <= (2**math.ceil(math.log(max(x.RC, x.LC),2)))/2 - 1:
+            self.insertFixUp(x, z)
         x = x.left
       else:
         #print "RIGHT"
+        x.RC += 1
+        if balance:
+          if min(x.LC, x.RC) <= (2**math.ceil(math.log(max(x.RC, x.LC),2)))/2 - 1:
+            self.insertFixUp(x, z)
         x = x.right
     z.parent = y
 
@@ -202,7 +210,7 @@ class KDTree(object):
     '''
     o berbicacho está aqui!!!
     '''
-   
+    print "ALERTA A ARVORE TA COXA EM " + str(x.key) + " NA INSERCAO DE " + str(z.key)
 '''
     #self.lista = []
     if x == self.nil:
