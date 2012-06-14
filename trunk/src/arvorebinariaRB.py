@@ -8,15 +8,12 @@ arvores de pesquisa binária
 '''
 from No import *      
     
-class RBT(object):
+class KDTree(object):
     def __init__(self):
         self.BLACK = 0
         self.RED = 1
         self.nil = No(None,None)
         self.nil.color = self.BLACK
-        self.parent = self.nil
-        self.left = self.nil
-        self.right = self.nil
         self.root = self.nil        
         pass
     
@@ -32,6 +29,8 @@ class RBT(object):
             self.inorderWalk(x.right, lista)
 
     def leftRotate(self, x):
+        if x.right.right == self.nil:
+            self.rightRotate(x.right)
         y = x.right
         x.right = y.left
         if y.left != self.nil:
@@ -48,6 +47,8 @@ class RBT(object):
         pass
 
     def rightRotate(self, x):
+        if x.left.left == self.nil:
+            self.leftRotate(x.left)
         y = x.left
         x.left = y.right
         if y.right != self.nil:
@@ -110,7 +111,6 @@ class RBT(object):
 
         y = self.nil
         x = self.root
-
         while x != self.nil:
             y = x
             if z.key < x.key:
@@ -130,32 +130,27 @@ class RBT(object):
     pass
 
 
-nos = [None for k in range(9)]
+no = []
+a = KDTree()
 
-nos[0] = No(11, "Renoir")
-nos[1] = No(2, "van Gogh")
-nos[2] = No(14, "Picasso")
-nos[3] = No(1, "Manet")
-nos[4] = No(7, "da Vinci")
-nos[5] = No(15, "Miguel Angelo")
-nos[6] = No(5, "Rafael")
-nos[7] = No(8, "Goya")
-nos[8] = No(4, "Turner")
+no.append(No((1,1), "Pedro"))
+no.append(No((0,1), "Miguel"))
+no.append(No((2,1), "Clemente"))
+no.append(No((2,2), "Clemente"))
+no.append(No((2,4), "Clemente"))
+no.append(No((1,0), "Miguel"))
+no.append(No((2,3), "Miguel"))
+no.append(No((0,4), "Miguel"))
+no.append(No((0,2), "Miguel"))
+#no.append(No((0,3), "Miguel"))
+#no.append(No((3,2), "Miguel"))
+#no.append(No((1,2), "Miguel"))
 
-arv = RBT()
-
-arv.insert(nos[0])
-arv.insert(nos[1])
-arv.insert(nos[2])
-arv.insert(nos[3])
-arv.insert(nos[4])
-arv.insert(nos[5])
-arv.insert(nos[6])
-arv.insert(nos[7])
-arv.insert(nos[8])
-
+for i in no:
+    a.insert(i)
+    
 lista = []
-arv.inorderWalk(arv.root, lista)
+a.inorderWalk(a.root, lista)
 
 for i in lista:
     print i
