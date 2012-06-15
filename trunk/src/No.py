@@ -25,7 +25,7 @@ class No(object):
         self.RC = 0
 
         # Ao ser criado o nó fica com os apontadores para si próprio (NIL)
-        self.parent = self.left = self.right = self
+        self.parent = self.left = self.right = None
         pass
 
     def __str__(self):
