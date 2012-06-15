@@ -34,53 +34,56 @@ class KDTree(object):
     self.stack = []
     self.lista = []
     self.lista2 = []
+    
 
   def insert(self, a, z, balance = True):
+    cont = 1
     z.parent = self.nil
     z.left = self.nil
     z.right = self.nil
     z.LC = z.RC = 0
 
     y = self.nil
-    x = self.root
+    x = a
     dim = -1
 
+
     while x != self.nil:
+      if x.key == z.key:
+        x.valor = z.valor
+        break
+
       dim = (dim + 1) % self.dimention
-      #print
-      #print
-      #print x.key, x.key[dim:]
-      #print z.key, z.key[dim:]
-      
-      #print dim
 
       y = x
       if z.key[dim:] < x.key[dim:]:
-        #print "LEFT"
         x.LC += 1
         if balance:
           if min(x.LC, x.RC) <= (2**math.ceil(math.log(max(x.RC, x.LC),2)))/2 - 1:
             self.insertFixUp(x, z)
+            cont = 0
+            break
         x = x.left
       else:
-        #print "RIGHT"
         x.RC += 1
         if balance:
           if min(x.LC, x.RC) <= (2**math.ceil(math.log(max(x.RC, x.LC),2)))/2 - 1:
             self.insertFixUp(x, z)
+            cont = 0
+            break
         x = x.right
-    z.parent = y
-
-    if y == self.nil:
-      self.root = z
-    elif z.key[dim:] < y.key[dim:]:
-      y.left = z
-    else:
-      y.right = z
+    if cont == 1:
+      z.parent = y
 
 
 
-
+      if y == self.nil:
+        self.root = z
+      elif z.key[dim:] < y.key[dim:]:
+        y.left = z
+      else:
+        y.right = z
+    
 
   def __clear(self, x, i):
     if x == self.root:
@@ -90,6 +93,7 @@ class KDTree(object):
       while(z != self.nil):
         if z.parent.left == z:
           z.parent.LC -= i
+
         else:
           z.parent.RC -= i
         z = z.parent
@@ -99,8 +103,10 @@ class KDTree(object):
       else:
         x.parent.right = self.nil
 
-
   def __clearCount(self, x, i):
+    '''
+    na me lembro pra ke raio keria isto!!! 
+    '''
     z = x
     while(z != self.nil):
       if z.parent.left == z:
@@ -113,8 +119,6 @@ class KDTree(object):
       x.parent.left = self.nil
     else:
       x.parent.right = self.nil
-
-
 
   def delete(self, z):
     if z.parent != self.nil:
@@ -211,50 +215,43 @@ class KDTree(object):
     o berbicacho está aqui!!!
     '''
     print "ALERTA A ARVORE TA COXA EM " + str(x.key) + " NA INSERCAO DE " + str(z.key)
-'''
-    #self.lista = []
-    if x == self.nil:
-      x = self.root
+    self.lista = []
     self.lista.append(z)
     self.inorderWalk(x, self.lista)
+    #self.insert(x, z, False)
+    
+    
     self.__clear(x, x.LC + x.RC + 1)
-    self.__rebuild()
-
-
-  def __rebuild(self):
-    self.stack = []
     Quicksort(self.lista)
+    #for i in self.lista:
+    #  self.insert(self.root, i, False)
+    
     self.stack.append(self.lista)
-    self.__reInsert()
+    self.__reInsert(self.nil)
 
-  def __reInsert(self):
-    self.lista = []
-    if len(self.stack) > 0:
-      temp = self.stack.pop(0)
-      if len(temp) > 1:
-        x = int(math.floor(len(temp)/2))
-        k = temp.pop(x)
-        self.stack.append(temp[:x])
-        self.stack.append(temp[x:])
-        self.insert(self.root, k, False)
-      elif len(temp) == 1:
-        self.insert(self.root, temp[0], False)
+  def __reInsert(self, f):
+    x = f
+    a = self.stack.pop(0)
+    if len(a) == 1:
+      self.insert(self.root, a.pop(0), False)
+    elif len(a) == 0:
+      pass
     else:
-      self.__checkBalance()
+      k = int(math.floor(len(a)/2))
+      x = a.pop(k)
+      x.parent = x.left = x.right = None
+      if x != f:
+        self.insert(self.root, x, False)
+      b = a[:k]
+      if len(b) > 0: self.stack.append(b)
+      b = a[k:]
+      if len(b) > 0: self.stack.append(b)
+    if len(self.stack) > 0:
+      self.__reInsert(x)
 
-  def __checkBalance(self):
-    stack = []
-    stack.append(self.root)
-    while len(stack) > 0:
-      x = stack.pop(0)
-      if x != self.nil:
-        if x.left != self.nil: stack.append(x.left)    
-        if x.right != self.nil: stack.append(x.right)
-        if x.LC + x.RC > 0:
-          if min(x.LC, x.RC) <= (2**math.ceil(math.log(max(x.RC, x.LC),2)))/2 - 1:
-            self.insertFixUp(x.parent, x)
-'''
 
+
+    
 no = []
 a = KDTree(2)
 
@@ -264,33 +261,29 @@ no.append(No((0,1), "Miguel"))
 no.append(No((2,1), "Clemente"))
 no.append(No((2,2), "Clemente"))
 no.append(No((1,0), "Miguel"))
-no.append(No((2,4), "Clemente"))
-
+#no.append(No((2,4), "Clemente"))
 no.append(No((2,3), "Miguel"))
-no.append(No((0,4), "Miguel"))
-no.append(No((0,2), "Miguel"))
-no.append(No((0,3), "Miguel"))
-no.append(No((3,2), "Miguel"))
-no.append(No((1,2), "Miguel"))
+#no.append(No((0,4), "Miguel"))
+#no.append(No((0,2), "Miguel"))
+#no.append(No((0,3), "Miguel"))
+#no.append(No((3,2), "Miguel"))
+#no.append(No((1,2), "Miguel"))
 
 #Quicksort(no)
 for i in no:
   a.insert(a.root, i)
 
+#a.insert(a.root, a.stack[1][0])
+
+print 
+print
+print
 lista = []
 a.inorderWalk(a.root, lista)
 for i in lista:
   print i
-print
+
 print 
 print
 
-print "LISTA"
-for i in a.lista:
-  print i
 
-print "STACK"
-for i in a.stack:
-  print"-"
-  for j in i:
-    print j
