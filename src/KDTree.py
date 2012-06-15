@@ -18,6 +18,9 @@ operaÃ§Ãµes:
 from Quicksort import *
 from No import *
 import math
+import sys
+
+
 
 class KDTree(object):
   '''
@@ -28,6 +31,7 @@ class KDTree(object):
     Construtor
     @param dimention dimensão da chave para ordenação dos dados
     '''
+    sys.setrecursionlimit(10000)
     self.nil = No(None, None)
     self.parent = self.left = self.right = self.root = self.nil
     self.dimention = dimention
@@ -214,7 +218,7 @@ class KDTree(object):
     '''
     o berbicacho está aqui!!!
     '''
-    print "ALERTA A ARVORE TA COXA EM " + str(x.key) + " NA INSERCAO DE " + str(z.key)
+    #print "ALERTA A ARVORE TA COXA EM " + str(x.key) + " NA INSERCAO DE " + str(z.key)
     self.lista = []
     self.lista.append(z)
     self.inorderWalk(x, self.lista)
@@ -227,10 +231,10 @@ class KDTree(object):
     #  self.insert(self.root, i, False)
     
     self.stack.append(self.lista)
-    self.__reInsert(self.nil)
+    self.__reInsert()
 
-  def __reInsert(self, f):
-    x = f
+  def __reInsert(self):
+
     a = self.stack.pop(0)
     if len(a) == 1:
       self.insert(self.root, a.pop(0), False)
@@ -240,18 +244,17 @@ class KDTree(object):
       k = int(math.floor(len(a)/2))
       x = a.pop(k)
       x.parent = x.left = x.right = None
-      if x != f:
-        self.insert(self.root, x, False)
+      self.insert(self.root, x, False)
       b = a[:k]
       if len(b) > 0: self.stack.append(b)
       b = a[k:]
       if len(b) > 0: self.stack.append(b)
     if len(self.stack) > 0:
-      self.__reInsert(x)
+      self.__reInsert()
 
 
 
-    
+'''    
 no = []
 a = KDTree(2)
 
@@ -287,3 +290,4 @@ print
 print
 
 
+'''

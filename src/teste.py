@@ -32,7 +32,7 @@ def inserirDados(lista, x):
 def construirArvore(arvore, lista):
 	#Quicksort(lista)
 	for i in lista:
-		arvore.insert(i)
+		arvore.insert(arvore.root, i)
 
 def main():
 
@@ -41,7 +41,7 @@ def main():
 	labels = []
 	f1 = open('labels.dat', 'w')	
 	f2 = open('dados.dat', 'w')	
-	for k in range(0, 100000, 10000):
+	for k in range(0, 1000, 10):
 		b = 0.0
 		N = 5
 		for j in range(N):
@@ -54,7 +54,7 @@ def main():
 			b += t2-t1
 		f1.write(str(k))
 		f2.write(str(b/N))
-		print k
+		print k, (b/N)
 		dados.append(b/N)
 		labels.append(k)
 
