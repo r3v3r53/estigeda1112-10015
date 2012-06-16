@@ -12,12 +12,13 @@ class Quicksort():
     o que a classe faz...
     '''
 
-    def __init__(self, A = []):
+    def __init__(self, A = [], dim = 0):
         '''
         construtor, pode inicializar
         uma lista de dados e ordená-la
         '''
         self.A = A
+        self.dim = dim
         if len(A) > 1:
             self.sort(self.A, 0, len(self.A) - 1)
         
@@ -52,10 +53,10 @@ class Quicksort():
     # PARTITION
 
     def __partition__(self, A, p, r):
-        x = A[r].key
+        x = A[r].key[self.dim:]
         i = p - 1
         for j in range(p, r):
-            if A[j].key <= x:
+            if A[j].key[self.dim:] <= x:
                 i += 1
                 A[i], A[j] = A[j], A[i]
                 pass
@@ -73,6 +74,7 @@ class Quicksort():
     def __randomizedQuicksort__(self, A, p, r):
         if p < r:
             q = self.__randomizedPartition__(A, p, r)
+            q = self.__partition__(A, p, r)
             self.__randomizedQuicksort__(A, p, q - 1)
             self.__randomizedQuicksort__(A, q + 1, r)
             pass
