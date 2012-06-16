@@ -252,9 +252,32 @@ class KDTree(object):
     if len(self.stack) > 0:
       self.__reInsert()
 
+  def nearestNeighbour(self, no):
+    '''
+    Percorre todos os elementos da árvore e calcula a distancia eucladiana 
+    devolve o no com menor distancia
+    @param no No que pretendemos fazer a pesquisa
+    @return No mais proximo do fornecido
+    '''
+    lista = [] 
+    self.inorderWalk(self.root, lista)
+    distancia = sys.maxint
+    x = self.nil
+    for i in lista:
+      if no != i:
+        temp = 0
+        for k in range(self.dimention):
+          temp += (i.key[k] - no.key[k])**2
+        temp = math.sqrt(temp)
+        if distancia > temp:
+          distancia = temp
+          x = i
+    return x
 
 
-'''    
+
+
+   
 no = []
 a = KDTree(2)
 
@@ -264,13 +287,13 @@ no.append(No((0,1), "Miguel"))
 no.append(No((2,1), "Clemente"))
 no.append(No((2,2), "Clemente"))
 no.append(No((1,0), "Miguel"))
-#no.append(No((2,4), "Clemente"))
+no.append(No((2,4), "Clemente"))
 no.append(No((2,3), "Miguel"))
-#no.append(No((0,4), "Miguel"))
-#no.append(No((0,2), "Miguel"))
-#no.append(No((0,3), "Miguel"))
-#no.append(No((3,2), "Miguel"))
-#no.append(No((1,2), "Miguel"))
+no.append(No((0,4), "Miguel"))
+no.append(No((0,2), "Miguel"))
+no.append(No((0,3), "Miguel"))
+no.append(No((3,2), "Miguel"))
+no.append(No((1,2), "Miguel"))
 
 #Quicksort(no)
 for i in no:
@@ -289,5 +312,6 @@ for i in lista:
 print 
 print
 
-
-'''
+print
+print no[1]
+print a.nearestNeighbour(no[1])
