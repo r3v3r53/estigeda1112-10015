@@ -23,6 +23,7 @@ class No(object):
         self.cor = 0
         self.LC = 0
         self.RC = 0
+        self.dim = 0
 
         # Ao ser criado o nó fica com os apontadores para si próprio (NIL)
         self.parent = self.left = self.right = None
@@ -33,23 +34,13 @@ class No(object):
         Override do método str
         Impressão personalizada do nó
         """
-        s = str(self.key) + ' : ' + str(self.valor)
+        s = str(self.key) + " : "#+ str(self.valor)
         s += '('
-        if self.parent == None: 
-            s += 'None, ' 
-        else:
-            s += str(self.parent.key) + ', ' 
-
-        if self.left == None:
-            s += 'None, ' 
-        else:
-            s += str(self.left.key) + ', ' 
-
-        if self.right == None:
-            s += 'None, ' 
-        else:
-            s += str(self.right.key)
+        s += str(self.parent.key) + ', ' 
+        s += str(self.left.key) + ', ' 
+        s += str(self.right.key)
         s += ', ' + str(self.size) + ')'
         s += ', LC = ' + str(self.LC)
         s += ', RC = ' + str(self.RC)
+        s += ', dim = ' + str(self.dim)
         return s

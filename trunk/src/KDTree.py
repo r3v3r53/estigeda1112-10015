@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 '''
 autor: Pedro Moreira, 10015
-data: 3 de Junho de 2012
+data: 16 de Junho de 2012
 
 kd-tree
-operaÃ§Ãµes:
-- criar Ã¡rvore a partir de uma lista
+operacoes:
+- criar arvore a partir de uma lista
 - inserir
 - apagar 
 - pesquisa
-- pesquisa do nÃ³ mais prÃ³ximo
+- pesquisa do no mais proximo
 - pesquisa do menor elemento
 - pesquisa do maior elemento
 - pesquisa do elemento seguinte  
@@ -19,8 +19,6 @@ from Quicksort import *
 from No import *
 import math
 import sys
-
-
 
 class KDTree(object):
   '''
@@ -31,17 +29,15 @@ class KDTree(object):
     Construtor
     @param dimention dimensão da chave para ordenação dos dados
     '''
-    sys.setrecursionlimit(10000)
-    self.nil = No(None, None)
-    self.parent = self.left = self.right = self.root = self.nil
+    #sys.setrecursionlimit(10000)
+    self.parent = self.left = self.right = self.root = self.nil = No(None, None)
     self.dimention = dimention
     self.stack = []
     self.lista = []
     self.lista2 = []
-    
 
   def insert(self, a, z, balance = True):
-    cont = 1
+
     z.parent = self.nil
     z.left = self.nil
     z.right = self.nil
@@ -51,49 +47,39 @@ class KDTree(object):
     x = a
     dim = -1
 
-
     while x != self.nil:
+      dim = (dim + 1) % self.dimention
       if x.key == z.key:
         x.valor = z.valor
         break
 
-      dim = (dim + 1) % self.dimention
-
+      z.dim = dim
       y = x
       if z.key[dim:] < x.key[dim:]:
         x.LC += 1
-        if balance:
-          if min(x.LC, x.RC) <= (2**math.ceil(math.log(max(x.RC, x.LC),2)))/2 - 1:
-            self.insertFixUp(x, z)
-            cont = 0
-            break
         x = x.left
       else:
         x.RC += 1
-        if balance:
-          if min(x.LC, x.RC) <= (2**math.ceil(math.log(max(x.RC, x.LC),2)))/2 - 1:
-            self.insertFixUp(x, z)
-            cont = 0
-            break
         x = x.right
-    if cont == 1:
-      z.parent = y
-
-
-
-      if y == self.nil:
-        self.root = z
-      elif z.key[dim:] < y.key[dim:]:
-        y.left = z
-      else:
-        y.right = z
+    z.parent = y
+    if y == self.nil:
+      self.root = z
+    elif z.key[dim:] < y.key[dim:]:
+      y.left = z
+    else:
+      y.right = z
     
+    if balance:
+      self.checkBalance()
 
-  def __clear(self, x, i):
+
+
+  def __clear(self, x):
     if x == self.root:
       self.root = self.nil
     else:
       z = x
+      i = x.RC + x.LC + 1
       while(z != self.nil):
         if z.parent.left == z:
           z.parent.LC -= i
@@ -107,22 +93,97 @@ class KDTree(object):
       else:
         x.parent.right = self.nil
 
-  def __clearCount(self, x, i):
-    '''
-    na me lembro pra ke raio keria isto!!! 
-    '''
-    z = x
-    while(z != self.nil):
-      if z.parent.left == z:
-        z.parent.LC -= i
-      else:
-        z.parent.RC -= i
-      z = z.parent
 
-    if x.parent.left == x:
-      x.parent.left = self.nil
+
+  def inorderWalk(self, x, lista):
+    '''
+    Percorrer a árvore devolvendo uma lista ordenada com os nós
+    @param x nó a partir do qual se constrói a lista
+    @param lista para guardar os dados
+    '''
+    if x != self.nil:
+      self.inorderWalk(x.left, lista)
+      lista.append( x )
+      self.inorderWalk(x.right, lista)
+
+
+  def __reInsert(self):
+    if len(self.stack) > 0:
+      a = self.stack.pop(0)
+      if len(a) == 1:
+        self.insert(self.root, a.pop(0), False)
+      elif len(a) == 0:
+        pass
+      else:
+
+
+        k = int(math.floor(len(a)/2))
+        x = a.pop(k)
+        x.parent = x.left = x.right = None
+        self.insert(self.root, x, False)
+        b = a[:k]
+        if len(b) > 0: 
+          self.stack.append(b)
+        b = a[k:]
+        if len(b) > 0: 
+          self.stack.append(b)
+      if len(self.stack) > 0:
+        self.__reInsert()
     else:
-      x.parent.right = self.nil
+      self.checkBalance()
+
+  def nearestNeighbour(self, no):
+    '''
+    Percorre todos os elementos da árvore e calcula a distancia eucladiana 
+    devolve o no com menor distancia
+    @param no No que pretendemos fazer a pesquisa
+    @return No mais proximo do fornecido
+    '''
+    lista = [] 
+    self.inorderWalk(self.root, lista)
+    distancia = sys.maxint
+    x = self.nil
+    for i in lista:
+      if no != i:
+        temp = 0
+        for k in range(self.dimention):
+          temp += (i.key[k] - no.key[k])**2
+        temp = math.sqrt(temp)
+        if distancia > temp:
+          distancia = temp
+          x = i
+    return x
+
+  def isBalanced(self, x):
+    a = x.LC
+    b = x.RC
+    if (a+b) < 2 : return True
+    if (a+b) <= 4 and min(a,b) == 1: return True
+    
+    return min(a, b) > 2**(int(math.floor(math.log(max(a,b),2))))-1
+
+
+  def checkBalance(self):
+
+    if self.root == self.nil:
+      return
+    stack = []
+    stack.append(self.root)
+    while len(stack) > 0:
+      x = stack.pop(0)
+      if x.left   != self.nil : stack.append(x.left)
+      if x.right  != self.nil : stack.append(x.right)
+
+      if self.isBalanced(x): continue
+      parent = x.parent
+      dim = x.dim
+      self.__clear(x)
+      lista = []
+      self.inorderWalk(x, lista)
+      Quicksort(lista, (dim + 1) % self.dimention)
+      self.stack.append(lista)
+      self.__reInsert()
+    pass
 
   def delete(self, z):
     if z.parent != self.nil:
@@ -135,10 +196,12 @@ class KDTree(object):
     lista = []
     self.inorderWalk(z.left, lista)
     self.inorderWalk(z.right, lista)
-    for i in lista:
-      self.insert(self.root, i)
+    self.stack.append(lista)
+    
     z.parent = z.left = z.right = self.nil
     z.LC = z.RC = 0
+    self.__reInsert()
+    self.checkBalance()
     pass
 
   def searchByValue(self, x, k):
@@ -166,152 +229,3 @@ class KDTree(object):
       else:
         return self.search(x.right, k)
     pass
-
-  def minimum(self, x):
-    '''
-    Encontrar o menor elemento na árvore com raiz em x
-    @param x árvore a pesquisar
-    @return menor elemento
-    '''
-    while x.left != self.nil:
-      x = x.left
-    return x
-
-  def maximum(self, x):
-    '''
-    Encontrar o maior elemento na árvore com raiz em x
-    @param x árvore a pesquisar
-    @return maior elemento
-    '''
-    while x.right != self.nil:
-      x = x.right
-    return x
-
-  def sucessor(self, x):
-    '''
-    Encontrar o elemento seguinte
-    @param x nó a partir do qual se efectua a pesquisa
-    @return nó seguinte ou null no caso de o próprio ser o maior da árvore
-    '''
-    if x.right != self.nil:
-      return minimum(x.right)
-    y = x.parent
-    while y != self.nil and x == y.right:
-      x = y
-      y = y.parent
-    return y
-    pass
-
-  def inorderWalk(self, x, lista):
-    '''
-    Percorrer a árvore devolvendo uma lista ordenada com os nós
-    @param x nó a partir do qual se constrói a lista
-    @param lista para guardar os dados
-    '''
-    if x != self.nil:
-      self.inorderWalk(x.left, lista)
-      lista.append( x )
-      self.inorderWalk(x.right, lista)
-
-
-  def insertFixUp(self, x, z):
-    '''
-    o berbicacho está aqui!!!
-    '''
-    #print "ALERTA A ARVORE TA COXA EM " + str(x.key) + " NA INSERCAO DE " + str(z.key)
-    self.lista = []
-    self.lista.append(z)
-    self.inorderWalk(x, self.lista)
-    #self.insert(x, z, False)
-    
-    
-    self.__clear(x, x.LC + x.RC + 1)
-    Quicksort(self.lista)
-    #for i in self.lista:
-    #  self.insert(self.root, i, False)
-    
-    self.stack.append(self.lista)
-    self.__reInsert()
-
-  def __reInsert(self):
-
-    a = self.stack.pop(0)
-    if len(a) == 1:
-      self.insert(self.root, a.pop(0), False)
-    elif len(a) == 0:
-      pass
-    else:
-      k = int(math.floor(len(a)/2))
-      x = a.pop(k)
-      x.parent = x.left = x.right = None
-      self.insert(self.root, x, False)
-      b = a[:k]
-      if len(b) > 0: self.stack.append(b)
-      b = a[k:]
-      if len(b) > 0: self.stack.append(b)
-    if len(self.stack) > 0:
-      self.__reInsert()
-
-  def nearestNeighbour(self, no):
-    '''
-    Percorre todos os elementos da árvore e calcula a distancia eucladiana 
-    devolve o no com menor distancia
-    @param no No que pretendemos fazer a pesquisa
-    @return No mais proximo do fornecido
-    '''
-    lista = [] 
-    self.inorderWalk(self.root, lista)
-    distancia = sys.maxint
-    x = self.nil
-    for i in lista:
-      if no != i:
-        temp = 0
-        for k in range(self.dimention):
-          temp += (i.key[k] - no.key[k])**2
-        temp = math.sqrt(temp)
-        if distancia > temp:
-          distancia = temp
-          x = i
-    return x
-
-
-
-
-   
-no = []
-a = KDTree(2)
-
-
-no.append(No((1,1), "Pedro"))
-no.append(No((0,1), "Miguel"))
-no.append(No((2,1), "Clemente"))
-no.append(No((2,2), "Clemente"))
-no.append(No((1,0), "Miguel"))
-no.append(No((2,4), "Clemente"))
-no.append(No((2,3), "Miguel"))
-no.append(No((0,4), "Miguel"))
-no.append(No((0,2), "Miguel"))
-no.append(No((0,3), "Miguel"))
-no.append(No((3,2), "Miguel"))
-no.append(No((1,2), "Miguel"))
-
-#Quicksort(no)
-for i in no:
-  a.insert(a.root, i)
-
-#a.insert(a.root, a.stack[1][0])
-
-print 
-print
-print
-lista = []
-a.inorderWalk(a.root, lista)
-for i in lista:
-  print i
-
-print 
-print
-
-print
-print no[1]
-print a.nearestNeighbour(no[1])
