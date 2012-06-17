@@ -34,12 +34,12 @@ def construirArvore(arvore, lista):
 	for i in lista:
 		arvore.malloc(i)
 
-def main():
+def inserir():
 
-	maxN = 200
+	maxN = 1000
 	startN = 0
-	increment = 10
-	N = 10
+	increment = 100
+	N = 40
 	dados = []
 	labels = []
 	f1 = open('labels.dat', 'w')	
@@ -67,7 +67,72 @@ def main():
 	drawGraph(dados, labels, "titulo")
 
 
-main()
+def apagar():
+	maxN = 1000
+	startN = 1
+	increment = 100
+	N = 40
+	dados = []
+	labels = []
+	f1 = open('labels.dat', 'w')	
+	f2 = open('dados.dat', 'w')	
+	for k in range(startN, maxN, increment):
+		b = 0.0
+		for j in range(N):
+			lista = []
+			inserirDados(lista, k)
+			arv = KDTree(k, 2)
+			construirArvore(arv, lista)
+			t1 = time.time()
+			arv.freeNo(lista[randint(0, len(lista))])
+			t2 = time.time()
+			b += t2-t1
+		f1.write(str(k))
+		f2.write(str(b/N))
+		print k, (b/N)
+		dados.append(b/N)
+		labels.append(k)
+
+	f1.close()
+	f2.close()
+
+
+	drawGraph(dados, labels, "titulo")
+
+
+def maisProximo():
+	maxN = 1000
+	startN = 1
+	increment = 100
+	N = 40
+	dados = []
+	labels = []
+	f1 = open('labels.dat', 'w')	
+	f2 = open('dados.dat', 'w')	
+	for k in range(startN, maxN, increment):
+		b = 0.0
+		for j in range(N):
+			lista = []
+			inserirDados(lista, k)
+			arv = KDTree(k, 2)
+			construirArvore(arv, lista)
+			t1 = time.time()
+			arv.nearestNeighbour(lista[randint(0, len(lista))])
+			t2 = time.time()
+			b += t2-t1
+		f1.write(str(k))
+		f2.write(str(b/N))
+		print k, (b/N)
+		dados.append(b/N)
+		labels.append(k)
+
+	f1.close()
+	f2.close()
+
+
+	drawGraph(dados, labels, "titulo")
+
+apagar()
 
 
 '''

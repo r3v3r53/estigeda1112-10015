@@ -21,9 +21,6 @@ class Quicksort():
         self.dim = dim
         if len(A) > 1:
             self.sort(self.A, 0, len(self.A) - 1)
-        
-    def __len__(self):
-        return len(self.A)
 
     #################################################
     # ORDENAR A LISTA
@@ -74,7 +71,7 @@ class Quicksort():
     def __randomizedQuicksort__(self, A, p, r):
         if p < r:
             q = self.__randomizedPartition__(A, p, r)
-            q = self.__partition__(A, p, r)
+            #q = self.__partition__(A, p, r)
             self.__randomizedQuicksort__(A, p, q - 1)
             self.__randomizedQuicksort__(A, q + 1, r)
             pass
