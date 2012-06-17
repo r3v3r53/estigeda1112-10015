@@ -10,6 +10,26 @@ operacoes:
 - inserir
 - apagar 
 - pesquisa do no mais proximo
+
+
+
+
+USAGE:
+
+criar uma arvore para 1000 nos e 3 dimensoes na chave:
+arvore = KDTRee(1000, 3)
+
+inserir um no na arvore
+no = No((0,0,0), "valor")
+arvore.malloc(no)
+
+procurar o no mais proximo
+maisProximo = arvore.maisProximo(no)
+
+eliminar um no
+arvore.freeNo(no)
+
+
 '''
 from Quicksort import *
 from No import *
