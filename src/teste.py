@@ -7,12 +7,6 @@ from pylab import *
 
 
 def drawGraph(ys, labels, title):
-	'''
-	desenhar um gráfico dados os valores ys nos anos disponíveis na bd
-	'''
-	# http://matplotlib.sourceforge.net/examples/pylab_examples/vertical_ticklabels.html
-	# http://www.secnetix.de/olli/Python/lambda_functions.hawk
-	# http://matplotlib.sourceforge.net/api/pyplot_api.html#matplotlib.pyplot.suptitle
 	a = lambda:range(1, len(ys) + 1)
 	plot(a(), ys)
 	locs, labels = xticks(a(), labels)
@@ -132,36 +126,12 @@ def maisProximo():
 
 	drawGraph(dados, labels, "titulo")
 
+#TESTES
+print "INSERIR"
+inserir()
+print
+print "APAGAR"
 apagar()
-
-
-'''
-no = []
-a = KDTree(2)
-
-
-no.append(No((1,1), "Pedro"))
-no.append(No((0,1), "Miguel"))
-no.append(No((2,1), "Clemente"))
-no.append(No((2,2), "Clemente"))
-no.append(No((2,4), "Clemente"))
-no.append(No((1,0), "Miguel"))
-no.append(No((2,3), "Miguel"))
-no.append(No((0,4), "Miguel"))
-no.append(No((0,2), "Miguel"))
-
-for i in no:
-	a.insert(i)
-
-
-lista = []
-a.inorderWalk(a.root, lista)
-for i in lista:
-	print i
 print
-print 
-print
-
-print a.searchByValue(a.root, "Ai")
-print a.minimum(a.root)
-'''
+print"MAIS PROXIMO"
+maisProximo()
