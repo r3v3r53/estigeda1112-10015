@@ -15,7 +15,7 @@ class Quicksort():
     def __init__(self, A = [], dim = 0):
         '''
         construtor, pode inicializar
-        uma lista de dados e ordená-la
+        uma lista de dados e ordena-la
         '''
         self.A = A
         self.dim = dim

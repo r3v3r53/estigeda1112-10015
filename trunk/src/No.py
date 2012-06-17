@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-autor: Pedro Moreira, n.º 10015
+autor: Pedro Moreira, 10015
 data: 17 de Junho de 2012
 
 '''
 
 class No(object):
     '''
-    Classe dos nós de cada elemento
+    Classe dos nos de cada elemento
     '''
     def __init__(self, key, valor):
         """
-        Criar um nó para utilização em RB Trees
-        @param key, chave do nó
-        @param valor, valor que o nó tem guardado
+        Criar um no para utilizacao em RB Trees
+        @param key, chave do no
+        @param valor, valor que o no tem guardado
         """
         self.key = key
         self.valor = valor
@@ -22,14 +22,14 @@ class No(object):
         self.RC = 0
         self.dim = 0
 
-        # Ao ser criado o nó fica com os apontadores para si próprio (NIL)
+        # Ao ser criado o no fica com os apontadores para si proprio (NIL)
         self.parent = self.left = self.right = None
         pass
 
     def __str__(self):
         """
-        Override do método str
-        Impressão personalizada do nó
+        Override do metodo str
+        Impressao personalizada do no
         """
         s = str(self.key) + " : "#+ str(self.valor)
         s += '('
