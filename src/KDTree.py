@@ -24,7 +24,7 @@ class KDTree(object):
   '''
   Estrutura de dados kdtree
   '''
-  def __init__(self, dimention):
+  def __init__(self, size, dimention):
     '''
     Construtor
     @param dimention dimensão da chave para ordenação dos dados
@@ -34,7 +34,26 @@ class KDTree(object):
     self.dimention = dimention
     self.stack = []
     self.lista = []
-    self.lista2 = []
+    self.free = [i for i in range(size)]
+    self.pointers = [None for i in range(size)]
+
+  def malloc(self, no):
+    if len(self.free) > 0:
+      x = self.free.pop()
+      self.pointers[x] = no.key
+      no.pointer = x
+      self.insert(self.root, no)
+      return x
+    else:
+      print "out of space"
+      return -1
+
+  def free(self, x):
+    if self.pointers[x.pointer] != None:
+      self.pointers[x.pointer] == None
+      self.free.push(x.pointer)
+    else:
+      return -1
 
   def insert(self, a, z, balance = True):
 
@@ -229,3 +248,15 @@ class KDTree(object):
       else:
         return self.search(x.right, k)
     pass
+
+
+arv = KDTree(30, 2)
+nos = [No((random.randint(0, 100), random.randint(0, 100)), random.randint(0, 1000)) for i in range(30)]
+for i in nos:
+  arv.malloc(i)
+
+lista = []
+arv.inorderWalk(arv.root, lista)
+
+for i in lista:
+  print i

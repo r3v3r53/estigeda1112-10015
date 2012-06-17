@@ -41,7 +41,7 @@ def main():
 	labels = []
 	f1 = open('labels.dat', 'w')	
 	f2 = open('dados.dat', 'w')	
-	for k in range(0, 1000, 10):
+	for k in range(0, 100, 10):
 		b = 0.0
 		N = 5
 		for j in range(N):
