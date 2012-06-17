@@ -23,8 +23,8 @@ class KDTree(object):
   def __init__(self, size, dimention):
     '''
     Construtor
-    @param dimention dimensão da chave para ordenação dos dados
-    @ param size tamanho da árvore
+    @param dimention dimensao da chave para ordenacao dos dados
+    @ param size tamanho da arvore
     '''
     #sys.setrecursionlimit(10000)
     self.root = self.nil = No(None, None)
@@ -36,9 +36,9 @@ class KDTree(object):
 
   def malloc(self, no):
     '''
-    Tentar a alocação de um Nó na árvore
-    @param no Objecto a ser inserido na árvore
-    @return -1 em caso de erro ou o nó já inserido na árvore
+    Tentar a alocacao de um No na arvore
+    @param no Objecto a ser inserido na arvore
+    @return -1 em caso de erro ou o no ja inserido na arvore
     '''
     if len(self.free) > 0:
       x = self.free.pop()
@@ -52,9 +52,9 @@ class KDTree(object):
 
   def freeNo(self, x):
     '''
-    Eliminar no da árvore
+    Eliminar no da arvore
     @param x no a Eliminar
-    @return -1 caso o nó não exista ou 0 se a operação correr com sucesso
+    @return -1 caso o no nao exista ou 0 se a operacao correr com sucesso
     '''
     if self.pointers[x.pointer] != None:
       self.pointers[x.pointer] == None
@@ -66,10 +66,10 @@ class KDTree(object):
 
   def insert(self, a, z, balance = True):
     '''
-    Inserir nó na árvore
-    @param a local a inserir o nó
-    @param z nó a inserir
-    @param balance informação para balancear ou não a árvore (true por defeito)
+    Inserir no na arvore
+    @param a local a inserir o no
+    @param z no a inserir
+    @param balance informacao para balancear ou nao a arvore (true por defeito)
     '''
     z.parent = self.nil
     z.left = self.nil
@@ -107,9 +107,9 @@ class KDTree(object):
 
   def __clear(self, x):
     '''
-    Contar os nós sucessores ao nó pretendido
+    Contar os nos sucessores ao no pretendido
     e percorrer todos os seus antecessores retirando a respectiva contagem
-    @param x nó a partir do qual será para limpar as contagens
+    @param x no a partir do qual sera para limpar as contagens
     '''
     if x == self.root:
       self.root = self.nil
@@ -131,8 +131,8 @@ class KDTree(object):
 
   def inorderWalk(self, x, lista):
     '''
-    Percorrer a árvore devolvendo uma lista ordenada com os nós
-    @param x nó a partir do qual se constrói a lista
+    Percorrer a arvore devolvendo uma lista ordenada com os nos
+    @param x no a partir do qual se constroi a lista
     @param lista para guardar os dados
     '''
     if x != self.nil:
@@ -143,7 +143,7 @@ class KDTree(object):
 
   def __reInsert(self):
     '''
-    Método para voltar a inserir na árvore nós 
+    Metodo para voltar a inserir na arvore nos 
     que tenham sido retirados por motidos de balanceamento
     '''
     if len(self.stack) > 0:
@@ -170,7 +170,7 @@ class KDTree(object):
 
   def nearestNeighbour(self, no):
     '''
-    Percorre todos os elementos da árvore e calcula a distancia eucladiana 
+    Percorre todos os elementos da arvore e calcula a distancia eucladiana 
     devolve o no com menor distancia
     @param no No que pretendemos fazer a pesquisa
     @return No mais proximo do fornecido
@@ -192,9 +192,9 @@ class KDTree(object):
 
   def isBalanced(self, x):
     '''
-    verificar se o número de sucessores para cada lado 
-    do nó em causa corresponde a dois ramos com a mesma altura
-    @param x nó a analisar
+    verificar se o numero de sucessores para cada lado 
+    do no em causa corresponde a dois ramos com a mesma altura
+    @param x no a analisar
     '''
     a = x.LC
     b = x.RC
@@ -205,10 +205,10 @@ class KDTree(object):
 
   def checkBalance(self):
     '''
-    percorrer todos os nós para 
-    verificar se a árvore está balanceada
-    caso existam problemas, os nós são retirados 
-    e ordenados para serem reinseridos na árvore
+    percorrer todos os nos para 
+    verificar se a arvore esta balanceada
+    caso existam problemas, os nos sao retirados 
+    e ordenados para serem reinseridos na arvore
     '''
     if self.root == self.nil:
       return
@@ -232,9 +232,9 @@ class KDTree(object):
 
   def delete(self, z):
     '''
-    Eliminar um nó e colocar todos os seus sucessores
-    na lista para serem reinseridos na árvore
-    @param z nó a ser eliminado
+    Eliminar um no e colocar todos os seus sucessores
+    na lista para serem reinseridos na arvore
+    @param z no a ser eliminado
     '''
     if z.parent != self.nil:
       if z.parent.left == z.key:
