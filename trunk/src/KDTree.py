@@ -28,6 +28,7 @@ class KDTree(object):
     '''
     Construtor
     @param dimention dimensão da chave para ordenação dos dados
+    @ param size tamanho da árvore
     '''
     #sys.setrecursionlimit(10000)
     self.parent = self.left = self.right = self.root = self.nil = No(None, None)
@@ -38,25 +39,42 @@ class KDTree(object):
     self.pointers = [None for i in range(size)]
 
   def malloc(self, no):
+    '''
+    Tentar a alocação de um Nó na árvore
+    @param no Objecto a ser inserido na árvore
+    @return -1 em caso de erro ou o nó já inserido na árvore
+    '''
     if len(self.free) > 0:
       x = self.free.pop()
       self.pointers[x] = no.key
       no.pointer = x
       self.insert(self.root, no)
-      return x
+      return no
     else:
       print "out of space"
       return -1
 
-  def free(self, x):
+  def freeNo(self, x):
+    '''
+    Eliminar no da árvore
+    @param x no a Eliminar
+    @return -1 caso o nó não exista ou 0 se a operação correr com sucesso
+    '''
     if self.pointers[x.pointer] != None:
       self.pointers[x.pointer] == None
-      self.free.push(x.pointer)
+      self.free.append(x.pointer)
+      self.delete(x)
+      return 0
     else:
       return -1
 
   def insert(self, a, z, balance = True):
-
+    '''
+    Inserir nó na árvore
+    @param a local a inserir o nó
+    @param z nó a inserir
+    @param balance informação para balancear ou não a árvore (true por defeito)
+    '''
     z.parent = self.nil
     z.left = self.nil
     z.right = self.nil
@@ -91,9 +109,12 @@ class KDTree(object):
     if balance:
       self.checkBalance()
 
-
-
   def __clear(self, x):
+    '''
+    Contar os nós sucessores ao nó pretendido
+    e percorrer todos os seus antecessores retirando a respectiva contagem
+    @param x nó a partir do qual será para limpar as contagens
+    '''
     if x == self.root:
       self.root = self.nil
     else:
@@ -112,8 +133,6 @@ class KDTree(object):
       else:
         x.parent.right = self.nil
 
-
-
   def inorderWalk(self, x, lista):
     '''
     Percorrer a árvore devolvendo uma lista ordenada com os nós
@@ -127,6 +146,10 @@ class KDTree(object):
 
 
   def __reInsert(self):
+    '''
+    Método para voltar a inserir na árvore nós 
+    que tenham sido retirados por motidos de balanceamento
+    '''
     if len(self.stack) > 0:
       a = self.stack.pop(0)
       if len(a) == 1:
@@ -134,8 +157,6 @@ class KDTree(object):
       elif len(a) == 0:
         pass
       else:
-
-
         k = int(math.floor(len(a)/2))
         x = a.pop(k)
         x.parent = x.left = x.right = None
@@ -174,16 +195,25 @@ class KDTree(object):
     return x
 
   def isBalanced(self, x):
+    '''
+    verificar se o número de sucessores para cada lado 
+    do nó em causa corresponde a dois ramos com a mesma altura
+    @param x nó a analisar
+    '''
     a = x.LC
     b = x.RC
     if (a+b) < 2 : return True
     if (a+b) <= 4 and min(a,b) == 1: return True
-    
     return min(a, b) > 2**(int(math.floor(math.log(max(a,b),2))))-1
 
 
   def checkBalance(self):
-
+    '''
+    percorrer todos os nós para 
+    verificar se a árvore está balanceada
+    caso existam problemas, os nós são retirados 
+    e ordenados para serem reinseridos na árvore
+    '''
     if self.root == self.nil:
       return
     stack = []
@@ -205,6 +235,11 @@ class KDTree(object):
     pass
 
   def delete(self, z):
+    '''
+    Eliminar um nó e colocar todos os seus sucessores
+    na lista para serem reinseridos na árvore
+    @param z nó a ser eliminado
+    '''
     if z.parent != self.nil:
       if z.parent.left == z.key:
         z.parent.left = self.nil
@@ -233,30 +268,21 @@ class KDTree(object):
     if x == self.nil or k == x.valor:
       return x
       if k < x.key:
-        return self.search(x.left, k)
+        return self.searchByValue(x.left, k)
       else:
-        return self.search(x.right, k)
+        return self.searchByValue(x.right, k)
 
   def searchByKey(self, x, k):
     '''
     Pesquisar nó pela chave
+    @param x nó actual para confirmação
+    @param k chave a pesquisar
     '''
     if x == self.nil or k == x.key:
       return x
       if k < x.key:
-        return self.search(x.left, k)
+        return self.searchByKey(x.left, k)
       else:
-        return self.search(x.right, k)
+        return self.searchByKey(x.right, k)
     pass
 
-
-arv = KDTree(30, 2)
-nos = [No((random.randint(0, 100), random.randint(0, 100)), random.randint(0, 1000)) for i in range(30)]
-for i in nos:
-  arv.malloc(i)
-
-lista = []
-arv.inorderWalk(arv.root, lista)
-
-for i in lista:
-  print i

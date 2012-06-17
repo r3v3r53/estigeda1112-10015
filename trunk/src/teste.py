@@ -32,22 +32,24 @@ def inserirDados(lista, x):
 def construirArvore(arvore, lista):
 	#Quicksort(lista)
 	for i in lista:
-		arvore.insert(arvore.root, i)
+		arvore.malloc(i)
 
 def main():
 
-
+	maxN = 200
+	startN = 0
+	increment = 10
+	N = 10
 	dados = []
 	labels = []
 	f1 = open('labels.dat', 'w')	
 	f2 = open('dados.dat', 'w')	
-	for k in range(0, 100, 10):
+	for k in range(startN, maxN, increment):
 		b = 0.0
-		N = 5
 		for j in range(N):
 			lista = []
 			inserirDados(lista, k)
-			arv = KDTree(2)
+			arv = KDTree(k, 2)
 			t1 = time.time()
 			construirArvore(arv, lista)
 			t2 = time.time()
