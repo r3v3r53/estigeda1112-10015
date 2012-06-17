@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-autor: Jose Jasnau Caeiro
-data: 7 de maio de 2012
+autor: Pedro Moreira, n.º 10015
+data: 17 de Junho de 2012
 
-Nós, vós, eles, e mais uns quantos para fazer doer a cabeça
 '''
 
 class No(object):
@@ -19,8 +18,6 @@ class No(object):
         """
         self.key = key
         self.valor = valor
-        self.size = 0
-        self.cor = 0
         self.LC = 0
         self.RC = 0
         self.dim = 0

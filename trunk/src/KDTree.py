@@ -9,11 +9,7 @@ operacoes:
 - criar arvore a partir de uma lista
 - inserir
 - apagar 
-- pesquisa
 - pesquisa do no mais proximo
-- pesquisa do menor elemento
-- pesquisa do maior elemento
-- pesquisa do elemento seguinte  
 '''
 from Quicksort import *
 from No import *
@@ -31,7 +27,7 @@ class KDTree(object):
     @ param size tamanho da árvore
     '''
     #sys.setrecursionlimit(10000)
-    self.parent = self.left = self.right = self.root = self.nil = No(None, None)
+    self.root = self.nil = No(None, None)
     self.dimention = dimention
     self.stack = []
     self.lista = []
@@ -257,32 +253,3 @@ class KDTree(object):
     self.__reInsert()
     self.checkBalance()
     pass
-
-  def searchByValue(self, x, k):
-    '''
-    pesquisar por valor
-    @param x nó a partir do qual se efectua a pesquisa
-    @param k valor a pesquisar
-    @return nó com o resultado
-    '''
-    if x == self.nil or k == x.valor:
-      return x
-      if k < x.key:
-        return self.searchByValue(x.left, k)
-      else:
-        return self.searchByValue(x.right, k)
-
-  def searchByKey(self, x, k):
-    '''
-    Pesquisar nó pela chave
-    @param x nó actual para confirmação
-    @param k chave a pesquisar
-    '''
-    if x == self.nil or k == x.key:
-      return x
-      if k < x.key:
-        return self.searchByKey(x.left, k)
-      else:
-        return self.searchByKey(x.right, k)
-    pass
-
