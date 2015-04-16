@@ -1,0 +1,1 @@
+biblioteca para operação com árvores k-d balanceadas
